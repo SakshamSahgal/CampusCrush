@@ -1,5 +1,6 @@
 var nodemailer = require('nodemailer'); //using Node Mailer Module
 const otpGenerator = require('otp-generator')
+const { writeDB } = require('../db/mongoOperations')
 
 async function SendOTP(req, res) {
 
@@ -24,7 +25,7 @@ async function SendOTP(req, res) {
         text: `${OTP} is your OTP, it is only valid for ${process.env.OTP_VALIDATION_DURATION_IN_MINUTES} minutes`
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
+    transporter.sendMail(mailOptions, async function (error, info) {
         if (error) {
             console.log(error);
             res.status(500).send({
@@ -35,14 +36,23 @@ async function SendOTP(req, res) {
         } else {
             console.log('Email sent: ' + email);
             console.log("Message sent : %s", `${OTP} is your OTP, it is only valid for ${process.env.OTP_VALIDATION_DURATION_IN_MINUTES} minutes`);
-            res.status(200).send({
-                success: true,
-                message: "OTP sent successfully"
-            });
+
+            try {
+                await writeDB("OTPRegistry", { email: email, otp: OTP, expireTime: new Date(Date.now() + process.env.OTP_VALIDATION_DURATION_IN_MINUTES * 60000) });
+                res.status(200).send({
+                    success: true,
+                    message: "OTP sent successfully"
+                });
+            }
+            catch (err) {
+                res.status(500).send({
+                    success: false,
+                    message: `Server Error`,
+                    error: err
+                });
+            }
         }
     });
 }
 
-module.exports = {
-    SendOTP
-}
+module.exports = { SendOTP }

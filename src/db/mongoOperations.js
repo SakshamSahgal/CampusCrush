@@ -34,6 +34,18 @@ async function readDB(Collection, query, projection) { // Read Entry
     }
 }
 
-module.exports = { connectDB, readDB };
+async function writeDB(Collection, data) { // Write Entry
+    try {
+        const db = client.db(process.env.DB_NAME);
+        const collection = db.collection(Collection);
+        const result = await collection.insertOne(data);
 
-module.exports = { connectDB, readDB };
+        return result;
+    } catch (error) {
+        console.error("Error:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+}
+
+
+module.exports = { connectDB, readDB, writeDB };

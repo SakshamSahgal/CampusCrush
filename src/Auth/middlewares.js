@@ -12,6 +12,4 @@ const verifyIfCollegeEmail = (req, res, next) => {
     }
 }
 
-module.exports = {
-    verifyIfCollegeEmail
-}
+module.exports = { verifyIfCollegeEmail }
