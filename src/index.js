@@ -1,7 +1,7 @@
 require("dotenv").config()
 const port = process.env.PORT || 8080
 const { app } = require("./app");
-const { SendOTP } = require("./Auth/register");
+const { SendOTP, validateOTP } = require("./Auth/register");
 const { verifyIfCollegeEmail } = require("./Auth/middlewares");
 const { connectDB } = require("./db/mongoOperations")
 
@@ -11,3 +11,4 @@ app.listen(port, async () => {
 })
 
 app.get("/RegisterEmail", verifyIfCollegeEmail, SendOTP);
+app.get("/validateOTP", validateOTP);

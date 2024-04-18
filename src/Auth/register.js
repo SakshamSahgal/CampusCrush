@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer'); //using Node Mailer Module
 const otpGenerator = require('otp-generator')
-const { writeDB } = require('../db/mongoOperations')
+const { writeDB, readDB } = require('../db/mongoOperations')
 
 async function SendOTP(req, res) {
 
@@ -55,4 +55,37 @@ async function SendOTP(req, res) {
     });
 }
 
-module.exports = { SendOTP }
+async function validateOTP(req, res) {
+    const { email, otp } = req.body;
+    console.log(email, otp)
+    try {
+
+        let Query = {
+            email: email,
+            otp: otp,
+            expireTime: { $gt: new Date() } //checking if the OTP is expired or not
+        }
+
+        let result = await readDB("OTPRegistry", Query);
+        if (result.length > 0) {
+            res.status(200).send({
+                success: true,
+                message: "OTP is valid"
+            });
+        }
+        else {
+            res.status(400).send({
+                success: false,
+                message: "OTP is invalid or expired"
+            });
+        }
+    } catch (err) {
+        res.status(500).send({
+            success: false,
+            message: `Server Error`,
+            error: err
+        });
+    }
+}
+
+module.exports = { SendOTP, validateOTP }
