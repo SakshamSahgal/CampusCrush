@@ -10,5 +10,6 @@ app.listen(port, async () => {
   await connectDB()
 })
 
-app.get("/RegisterEmail", verifyIfCollegeEmail, SendOTP);
-app.get("/validateOTP", validateOTP);
+app.post("/RegisterEmail", verifyIfCollegeEmail, SendOTP);
+app.post("/validateOTP", validateOTP);
+

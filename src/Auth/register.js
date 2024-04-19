@@ -56,7 +56,7 @@ async function SendOTP(req, res) {
 }
 
 async function validateOTP(req, res) {
-    const { email, otp } = req.body;
+    const { email, otp, birthday, batch, name, campus, gender } = req.body;
     console.log(email, otp)
     try {
 
