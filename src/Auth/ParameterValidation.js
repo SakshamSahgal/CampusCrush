@@ -1,5 +1,5 @@
 
-const validateOTPParameters = (req, res, next) => {
+const validateOTPParameters = async (req, res, next) => {
     // const { email, otp, birthday, batch, name, campus, gender } = req.body;
     // //gender should be in ['Male' ]
     if (req.body.email && req.body.otp && req.body.birthday && req.body.batch && req.body.name && req.body.campus && req.body.gender) {
@@ -13,7 +13,7 @@ const validateOTPParameters = (req, res, next) => {
     }
 }
 
-const validateRegisterParameters = (req, res, next) => {
+const validateRegisterParameters = async (req, res, next) => {
     if (!req.body.email) {
         res.status(400).send({
             success: false,

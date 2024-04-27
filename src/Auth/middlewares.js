@@ -1,7 +1,7 @@
-const { readDB, checkIfExists } = require("../db/mongoOperations");
+const { checkIfExists } = require("../db/mongoOperations");
 
 
-const verifyIfCollegeEmail = (req, res, next) => {
+const verifyIfCollegeEmail = async (req, res, next) => {
     console.log(req.body);
     const { email } = req.body;
     console.log(email);
@@ -30,7 +30,6 @@ const checkIfEmailAlreadyRegistered = async (req, res, next) => {
                 message: "Email already registered"
             });
         } else {
-            console.log("Email not already registered");
             next();
         }
     } catch (err) {
@@ -42,21 +41,4 @@ const checkIfEmailAlreadyRegistered = async (req, res, next) => {
     }
 }
 
-const validateOTPParameters = (req, res, next) => {
-    const { email, otp, birthday, batch, name, campus, gender } = req.body;
-    //gender should be in ['Male' ]
-}
-
-const validateRegisterParameters = (req, res, next) => {
-    if (!req.body.email) {
-        res.status(400).send({
-            success: false,
-            message: "Email is required"
-        });
-    } else {
-        next();
-    }
-}
-
-
-module.exports = { verifyIfCollegeEmail, checkIfEmailAlreadyRegistered, validateOTPParameters, validateRegisterParameters }
+module.exports = { verifyIfCollegeEmail, checkIfEmailAlreadyRegistered }
