@@ -1,8 +1,9 @@
 require("dotenv").config()
 const port = process.env.PORT || 8080
 const { app } = require("./app");
-const { SendOTP, validateOTP } = require("./Auth/register");
-const { verifyIfCollegeEmail } = require("./Auth/middlewares");
+const { SendOTP, validateOTP, RegisterUser } = require("./Auth/register");
+const { validateRegisterParameters, validateOTPParameters } = require("./Auth/ParameterValidation");
+const { verifyIfCollegeEmail, checkIfEmailAlreadyRegistered } = require("./Auth/middlewares");
 const { connectDB } = require("./db/mongoOperations")
 
 app.listen(port, async () => {
@@ -10,6 +11,6 @@ app.listen(port, async () => {
   await connectDB()
 })
 
-app.post("/RegisterEmail", verifyIfCollegeEmail, SendOTP);
-app.post("/validateOTP", validateOTP);
+app.post("/RegisterEmail", validateRegisterParameters, verifyIfCollegeEmail, checkIfEmailAlreadyRegistered, SendOTP); //this is the route for sending OTP
+app.post("/validateOTP", validateOTPParameters, validateOTP, RegisterUser);
 

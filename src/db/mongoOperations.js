@@ -47,5 +47,17 @@ async function writeDB(Collection, data) { // Write Entry
     }
 }
 
+async function checkIfExists(Collection, query) {
+    try {
+        const db = client.db(process.env.DB_NAME);
+        const collection = db.collection(Collection);
+        const exists = await collection.findOne(query);
 
-module.exports = { connectDB, readDB, writeDB };
+        return exists !== null; // Return true if any entry matches the query
+    } catch (error) {
+        console.error("Error:", error);
+        throw error;
+    }
+}
+
+module.exports = { connectDB, readDB, writeDB, checkIfExists };

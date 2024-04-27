@@ -2,6 +2,10 @@ var nodemailer = require('nodemailer'); //using Node Mailer Module
 const otpGenerator = require('otp-generator')
 const { writeDB, readDB } = require('../db/mongoOperations')
 
+//this function takes email
+//then sends that OTP to the email
+//then saves the OTP in the OTPRegistry collection
+
 async function SendOTP(req, res) {
 
     const { email } = req.body;
@@ -55,8 +59,11 @@ async function SendOTP(req, res) {
     });
 }
 
-async function validateOTP(req, res) {
-    const { email, otp, birthday, batch, name, campus, gender } = req.body;
+//this middleware takes otp, email and other personal details and validates the OTP
+//If email OTP and expiry time is valid then it proceeds to the next middleware
+
+async function validateOTP(req, res, next) {
+    const { email, otp } = req.body;
     console.log(email, otp)
     try {
 
@@ -67,11 +74,9 @@ async function validateOTP(req, res) {
         }
 
         let result = await readDB("OTPRegistry", Query);
-        if (result.length > 0) {
-            res.status(200).send({
-                success: true,
-                message: "OTP is valid"
-            });
+
+        if (result.length > 0) { //OTP is valid
+            next();
         }
         else {
             res.status(400).send({
@@ -88,4 +93,23 @@ async function validateOTP(req, res) {
     }
 }
 
-module.exports = { SendOTP, validateOTP }
+async function RegisterUser(req, res) {
+    const { email, birthday, batch, name, campus, gender } = req.body;
+    try {
+        const response = await writeDB("Users", { email: email, birthday: birthday, batch: batch, name: name, campus: campus, gender: gender });
+        res.status(200).send({
+            success: true,
+            message: "User Registered successfully"
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            message: `Server Error`,
+            error: err
+        });
+    }
+
+}
+
+module.exports = { SendOTP, validateOTP, RegisterUser }
