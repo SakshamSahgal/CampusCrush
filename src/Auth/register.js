@@ -94,9 +94,9 @@ async function validateOTP(req, res, next) {
 }
 
 async function RegisterUser(req, res) {
-    const { email, birthday, batch, name, campus, gender } = req.body;
+    const { email, birthday, batch, name, campus, gender, password } = req.body;
     try {
-        const response = await writeDB("Users", { email: email, birthday: birthday, batch: batch, name: name, campus: campus, gender: gender });
+        const response = await writeDB("Users", { email: email, birthday: birthday, batch: batch, name: name, campus: campus, gender: gender, password: password });
         res.status(200).send({
             success: true,
             message: "User Registered successfully"
@@ -109,7 +109,6 @@ async function RegisterUser(req, res) {
             error: err
         });
     }
-
 }
 
 module.exports = { SendOTP, validateOTP, RegisterUser }
