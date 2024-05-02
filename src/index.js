@@ -7,10 +7,13 @@ const { verifyIfCollegeEmail, checkIfEmailAlreadyRegistered } = require("./Auth/
 const { connectDB } = require("./db/mongoOperations")
 const { loginRoute } = require("./Auth/jwt")
 
+
 app.listen(port, async () => {
   console.log(`Server running on port ${port}`)
   await connectDB()
 })
+
+require("./Bot/pingBot")(app)
 
 app.post("/RegisterEmail", validateRegisterParameters, verifyIfCollegeEmail, checkIfEmailAlreadyRegistered, SendOTP); //this is the route for sending OTP
 app.post("/validateOTP", validateOTPParameters, validateOTP, RegisterUser);
