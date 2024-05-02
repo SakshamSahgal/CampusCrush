@@ -46,7 +46,7 @@ RUN echo "PORT=${PORT}" >> .env \
 
 
 # Expose the port your app runs on
-EXPOSE 8080
+EXPOSE ${PORT}
 
 # Command to run your application
 CMD ["node", "src/index.js"]
